@@ -32,13 +32,23 @@ export function AuthProvider({ children }) {
     await loadMe();
   }
 
+  async function loginWithCredentials(email, password) {
+    // TokenObtainPairView expects 'username' by default; send email as username
+    const result = await apiFetch("/api/auth/login/", {
+      method: "POST",
+      body: JSON.stringify({ username: email, password }),
+    });
+    setTokens({ access: result.access, refresh: result.refresh });
+    await loadMe();
+  }
+
   function logout() {
     clearTokens();
     setMe(null);
   }
 
   return (
-    <AuthContext.Provider value={{ me, loading, loginWithGoogleIdToken, logout, reload: loadMe }}>
+    <AuthContext.Provider value={{ me, loading, loginWithGoogleIdToken, loginWithCredentials, logout, reload: loadMe }}>
       {children}
     </AuthContext.Provider>
   );

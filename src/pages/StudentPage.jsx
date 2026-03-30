@@ -85,13 +85,13 @@ export default function StudentPage() {
   }
 
   return (
-    <div style={{ padding: 16 }}>
-      <h2>Student Evaluation</h2>
+    <div className="max-w-4xl mx-auto p-6">
+      <h2 className="text-2xl font-semibold mb-4">Student Evaluation</h2>
 
-      <div style={{ display: "grid", gap: 8, maxWidth: 420 }}>
-        <label>
-          Program:
-          <select value={programId} onChange={(e) => { setProgramId(e.target.value); setCohortId(""); }}>
+      <div className="grid gap-3 max-w-md">
+        <label className="flex flex-col text-sm">
+          <span className="mb-1 text-gray-700">Program</span>
+          <select value={programId} onChange={(e) => { setProgramId(e.target.value); setCohortId(""); }} className="border rounded px-2 py-1">
             <option value="">-- Select --</option>
             {programs.map((p) => (
               <option key={p.id} value={p.id}>{p.code} - {p.name}</option>
@@ -99,19 +99,19 @@ export default function StudentPage() {
           </select>
         </label>
 
-        <label>
-          Year Level:
-          <input value={yearLevel} onChange={(e) => setYearLevel(e.target.value)} placeholder="e.g., 1, 2, 3, 4" />
+        <label className="flex flex-col text-sm">
+          <span className="mb-1 text-gray-700">Year Level</span>
+          <input value={yearLevel} onChange={(e) => setYearLevel(e.target.value)} placeholder="e.g., 1, 2, 3, 4" className="border rounded px-2 py-1" />
         </label>
 
-        <label>
-          Section:
-          <input value={section} onChange={(e) => setSection(e.target.value)} placeholder="e.g., A" />
+        <label className="flex flex-col text-sm">
+          <span className="mb-1 text-gray-700">Section</span>
+          <input value={section} onChange={(e) => setSection(e.target.value)} placeholder="e.g., A" className="border rounded px-2 py-1" />
         </label>
 
-        <label>
-          Cohort match:
-          <select value={cohortId} onChange={(e) => setCohortId(e.target.value)}>
+        <label className="flex flex-col text-sm">
+          <span className="mb-1 text-gray-700">Cohort match</span>
+          <select value={cohortId} onChange={(e) => setCohortId(e.target.value)} className="border rounded px-2 py-1">
             <option value="">-- Select --</option>
             {filteredCohorts.map((c) => (
               <option key={c.id} value={c.id}>
@@ -122,52 +122,53 @@ export default function StudentPage() {
         </label>
       </div>
 
-      <hr style={{ margin: "16px 0" }} />
+      <hr className="my-6" />
 
-      <h3>Faculty Assignments</h3>
-      {!cohortId && <div>Select your cohort to load assignments.</div>}
-      {cohortId && assignments.length === 0 && <div>No assignments found for this cohort.</div>}
+      <h3 className="text-xl font-medium mb-2">Faculty Assignments</h3>
+      {!cohortId && <div className="text-gray-600 mb-2">Select your cohort to load assignments.</div>}
+      {cohortId && assignments.length === 0 && <div className="text-gray-600 mb-2">No assignments found for this cohort.</div>}
 
-      <ul>
+      <ul className="space-y-2 mb-4">
         {assignments.map((a) => (
-          <li key={a.id} style={{ marginBottom: 8 }}>
-            <button onClick={() => setSelectedAssignment(a)}>
-              Evaluate: {a.faculty.display_name} — {a.course.code} ({a.term.school_year} {a.term.term_name})
+          <li key={a.id}>
+            <button className="text-left w-full bg-white border border-gray-200 rounded px-3 py-2 hover:bg-gray-50" onClick={() => setSelectedAssignment(a)}>
+              Evaluate: {a.faculty.display_name} — {a.course.code} <span className="text-sm text-gray-500">({a.term.school_year} {a.term.term_name})</span>
             </button>
           </li>
         ))}
       </ul>
 
       {selectedAssignment && (
-        <div style={{ marginTop: 16, padding: 12, border: "1px solid #ddd", maxWidth: 600 }}>
-          <h4>
-            Evaluating {selectedAssignment.faculty.display_name} — {selectedAssignment.course.code}
-          </h4>
+        <div className="mt-4 p-4 border border-gray-200 rounded-md max-w-2xl bg-white">
+          <h4 className="text-lg font-medium">Evaluating {selectedAssignment.faculty.display_name} — {selectedAssignment.course.code}</h4>
 
-          {DEFAULT_RUBRIC.map((r) => (
-            <label key={r.key} style={{ display: "block", marginBottom: 8 }}>
-              {r.label}:
-              <input
-                type="number"
-                min="1"
-                max="5"
-                value={rubric[r.key] ?? 5}
-                onChange={(e) => setRubric((prev) => ({ ...prev, [r.key]: Number(e.target.value) }))}
-              />
-            </label>
-          ))}
+          <div className="mt-3 space-y-3">
+            {DEFAULT_RUBRIC.map((r) => (
+              <label key={r.key} className="flex items-center justify-between" >
+                <span className="text-sm text-gray-700">{r.label}</span>
+                <input
+                  type="number"
+                  min="1"
+                  max="5"
+                  value={rubric[r.key] ?? 5}
+                  onChange={(e) => setRubric((prev) => ({ ...prev, [r.key]: Number(e.target.value) }))}
+                  className="w-20 border rounded px-2 py-1 text-center"
+                />
+              </label>
+            ))}
+          </div>
 
-          <label style={{ display: "block", marginBottom: 8 }}>
-            Optional Comment (will be encrypted after crypto update):
-            <textarea value={comment} onChange={(e) => setComment(e.target.value)} rows={4} style={{ width: "100%" }} />
+          <label className="block mt-4">
+            <div className="text-sm text-gray-700 mb-1">Optional Comment (will be encrypted after crypto update)</div>
+            <textarea value={comment} onChange={(e) => setComment(e.target.value)} rows={4} className="w-full border rounded p-2" />
           </label>
 
-          {error && <div style={{ color: "crimson" }}>{error}</div>}
-          {status && <div style={{ color: "green" }}>{status}</div>}
+          {error && <div className="text-red-600 mt-3">{error}</div>}
+          {status && <div className="text-green-600 mt-3">{status}</div>}
 
-          <div style={{ display: "flex", gap: 8 }}>
-            <button onClick={submit}>Submit</button>
-            <button onClick={() => setSelectedAssignment(null)}>Cancel</button>
+          <div className="flex gap-3 mt-4">
+            <button onClick={submit} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Submit</button>
+            <button onClick={() => setSelectedAssignment(null)} className="bg-gray-200 px-4 py-2 rounded">Cancel</button>
           </div>
         </div>
       )}
